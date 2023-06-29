@@ -9,11 +9,11 @@
 
 ## About
 
-[ironkey.dev]() is an open source user management tool written with Golang and Sveltekit. It is currently under development.
+[ironkey.dev](https://ironkey.dev) is an open source user management tool written with Golang and Sveltekit. It is currently under development.
 
 ## Docs
 
-TODO (will be at [docs.ironkey.dev]())
+TODO (will be at [docs.ironkey.dev](https://docs.ironkey.dev))
 
 ## Running
 
