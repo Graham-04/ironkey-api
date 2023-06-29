@@ -1,4 +1,4 @@
-## Go User Management API
+## [ironkey.dev](Ironkey.dev) API
 
 <div style="display: flex;">
     <img src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white" alt="Go logo">
@@ -6,6 +6,14 @@
     <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker logo">
 </div>
 
+
+## About
+
+[ironkey.dev]() is an open source user management tool written with Golang and Sveltekit. It is currently under development.
+
+## Docs
+
+TODO (will be at [docs.ironkey.dev]())
 
 ## Running
 
