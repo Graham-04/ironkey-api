@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"user-management/sql"
+	"github.com/Graham-04/ironkey-api/sql"
 
 	"github.com/gin-gonic/gin"
 )

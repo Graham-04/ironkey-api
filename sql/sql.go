@@ -6,7 +6,7 @@ import (
 	"log"
 	"sync"
 	"time"
-	"user-management/hash"
+	"github.com/Graham-04/ironkey-api/hash"
 
 	"github.com/go-sql-driver/mysql"
 )

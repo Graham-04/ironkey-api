@@ -1,4 +1,4 @@
-module user-management
+module github.com/Graham-04/ironkey-api
 
 go 1.20
 

@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"user-management/handlers"
-	"user-management/sql"
+	"github.com/Graham-04/ironkey-api/handlers"
+	"github.com/Graham-04/ironkey-api/sql"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
