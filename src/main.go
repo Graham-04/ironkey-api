@@ -35,6 +35,8 @@ func main() {
 		LastName:  "last name",
 	})
 
+	dataStore.Search("us")
+
 	r := gin.Default()
 	r.Use(func(c *gin.Context) {
 		c.Set("datastore", dataStore)
@@ -59,6 +61,7 @@ func main() {
 	r.POST("/user", handlers.AddUser)
 	r.PATCH("/user", handlers.UpdateUser)
 	r.DELETE("/user", handlers.DeleteUser)
+	r.GET("/search", handlers.Search)
 
 	r.Run("127.0.0.1:8080")
 

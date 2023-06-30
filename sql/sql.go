@@ -3,10 +3,10 @@ package sql
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Graham-04/ironkey-api/hash"
 	"log"
 	"sync"
 	"time"
-	"github.com/Graham-04/ironkey-api/hash"
 
 	"github.com/go-sql-driver/mysql"
 )
@@ -41,7 +41,7 @@ type GetUsersResult struct {
 }
 
 type UpdateUserRequest struct {
-	Id        *string `json:"id" binding:"required"` 
+	Id        *string `json:"id" binding:"required"`
 	Email     string  `json:"email" binding:"required,email"`
 	FirstName string  `json:"firstname" binding:"required,alpha,min=1,max=50"`
 	LastName  string  `json:"lastname" binding:"required,alpha,min=1,max=50"`
@@ -65,6 +65,7 @@ type SQLDataStore interface {
 	GetUsers(offset int16) GetUsersResult
 	DeleteUser(email string, id string) bool
 	GetTotalUserCount() int
+	Search(value string) []RedactedUser
 	UpdateUser(newUserData UpdateUserRequest) bool
 	// UpdateUser(user User) bool
 }
@@ -226,13 +227,16 @@ func (m *MySQLDataStore) GetUser(email string, id string) User {
 		log.Fatal("[sql.go] Could not prepare GetUser query. Exiting...")
 	}
 	defer stmt.Close()
-
-	row := stmt.QueryRow(email, id)
 	var user User
-	err = row.Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
+
+	err = stmt.QueryRow(email, id).Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
 	if err != nil && err != sql.ErrNoRows {
 		log.Fatal("[sql.go] Could not scan GetUser query. Exiting...")
 	}
+	// err = row.Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
+	// if err != nil && err != sql.ErrNoRows {
+	// 	log.Fatal("[sql.go] Could not scan GetUser query. Exiting...")
+	// }
 	return user
 }
 
@@ -263,6 +267,7 @@ func (m *MySQLDataStore) GetUsers(offset int16) GetUsersResult {
 		log.Fatal("[sql.go] Could not query rows for GetUsers. Exiting...")
 	}
 
+	defer rows.Close()
 	for rows.Next() {
 		var user User
 		err = rows.Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.Notes, &user.CreatedAt)
@@ -302,11 +307,43 @@ func (m *MySQLDataStore) UpdateUser(user UpdateUserRequest) bool {
 		fmt.Println("[sql.go] Could not get RowsAffected for UpdateUser. Exiting...")
 	}
 
-	fmt.Println(affected);
+	fmt.Println(affected)
 	if affected == 1 {
 		return true
 	} else {
 		return false
 	}
 
+}
+
+func (m *MySQLDataStore) Search(value string) []RedactedUser {
+	var result []RedactedUser
+	stmt, err := m.db.Prepare("SELECT email, id, firstName, lastName, notes, createdAt FROM Users WHERE email LIKE ? OR id LIKE ? OR passwordHash LIKE ? OR firstName LIKE ? OR lastName LIKE ? OR CAST(createdAt AS CHAR) LIKE ?")
+	if err != nil {
+		log.Fatal("[sql.go] Could not prepare Search query. Exiting", err)
+	}
+
+	defer stmt.Close()
+
+	value = "%" + value + "%"
+	fmt.Println(value)
+
+	rows, err := stmt.Query(value, value, value, value, value, value)
+	if err != nil {
+		log.Fatal("[sql.go] Could not scan Search query. Exiting...", err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var user RedactedUser
+		err = rows.Scan(&user.Email, &user.Id, &user.FirstName, &user.LastName, &user.Notes, &user.CreatedAt)
+		if err != nil {
+			log.Fatal("[sql.go] Could not scan Search query. Exiting...", err)
+		}
+		result = append(result, user)
+	}
+
+	fmt.Println("result:", len(result))
+	return result
 }

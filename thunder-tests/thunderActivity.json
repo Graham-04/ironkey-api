@@ -121,5 +121,165 @@
             "form": []
         },
         "tests": []
+    },
+    {
+        "_id": "3e7e3c24-1d75-40ae-841e-4ddd02306cdc",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=em",
+        "url": "localhost:8080/search?value=em",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:19:30.259Z",
+        "modified": "2023-06-30T01:19:30.259Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "em",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "72b6abdc-f47b-467d-bd81-f0e9a009bdf1",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=ema",
+        "url": "localhost:8080/search?value=ema",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:19:33.103Z",
+        "modified": "2023-06-30T01:19:33.103Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "ema",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "425fd873-bf07-4efc-a511-85e3400c26ac",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=us",
+        "url": "localhost:8080/search?value=us",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:21:38.777Z",
+        "modified": "2023-06-30T01:21:38.777Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "us",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "42934d97-1667-4c64-930f-42e6d4791272",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=us'",
+        "url": "localhost:8080/search?value=us'",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:21:40.441Z",
+        "modified": "2023-06-30T01:21:40.441Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "us'",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "f33d6f4e-9fb5-47f3-aeb7-d18cdc835f63",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=nine",
+        "url": "localhost:8080/search?value=nine",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:24:36.671Z",
+        "modified": "2023-06-30T01:24:36.671Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "nine",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "0ee7a59d-f021-4b60-beed-508b010be755",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=nine00",
+        "url": "localhost:8080/search?value=nine00",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:26:49.067Z",
+        "modified": "2023-06-30T01:26:49.067Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "nine00",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "21c66d96-3773-4924-afa6-0d8580c627e3",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=65",
+        "url": "localhost:8080/search?value=65",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:29:14.634Z",
+        "modified": "2023-06-30T01:29:14.634Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "65",
+                "isPath": false
+            }
+        ],
+        "tests": []
+    },
+    {
+        "_id": "e46696ce-d70b-4494-b776-74deff3c64e0",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:8080/search?value=06-3",
+        "url": "localhost:8080/search?value=06-3",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2023-06-30T01:29:22.034Z",
+        "modified": "2023-06-30T01:29:22.034Z",
+        "headers": [],
+        "params": [
+            {
+                "name": "value",
+                "value": "06-3",
+                "isPath": false
+            }
+        ],
+        "tests": []
     }
 ]

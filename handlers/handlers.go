@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/Graham-04/ironkey-api/sql"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -102,6 +102,7 @@ func GetUser(c *gin.Context) {
 		Id:        user.Id,
 	}
 	c.JSON(http.StatusOK, redactedUser)
+	return
 }
 
 func GetUsers(c *gin.Context) {
@@ -148,6 +149,21 @@ func UpdateUser(c *gin.Context) {
 		return
 	} else {
 		c.Status(500)
+		return
 	}
 
+}
+
+func Search(c *gin.Context) {
+	dataStore := c.MustGet("datastore").(sql.SQLDataStore)
+	value := c.Query("value")
+	fmt.Println("value:", value)
+	result := dataStore.Search(value)
+	if len(result) >= 1 {
+		c.JSON(http.StatusOK, result)
+		return
+	}
+
+	c.JSON(http.StatusOK, []int{})
+	return
 }
