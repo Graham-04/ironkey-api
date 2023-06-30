@@ -82,6 +82,26 @@ paths:
                 $ref: "#/components/schemas/GetUsersResult"
         "400":
           description: Bad Request
+  /search:
+    get:
+      summary: Search users
+      parameters:
+        - name: value
+          in: query
+          description: Search value
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RedactedUser"
+        "400":
+          description: Bad Request
 components:
   schemas:
     User:
