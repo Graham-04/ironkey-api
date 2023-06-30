@@ -115,6 +115,7 @@ components:
           type: string
         notes:
           type: string
+          nullable: true
         password:
           type: string
         firstName:
@@ -132,6 +133,7 @@ components:
           type: string
         notes:
           type: string
+          nullable: true
         firstName:
           type: string
         lastName:
@@ -158,6 +160,7 @@ components:
           type: string
         notes:
           type: string
+          nullable: true
     AddUserRequest:
       type: object
       properties:
@@ -169,5 +172,6 @@ components:
           type: string
         notes:
           type: string
+          nullable: true
         password:
           type: string
