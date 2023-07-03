@@ -2,11 +2,13 @@ package sql
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	"github.com/Graham-04/ironkey-api/hash"
 	"log"
 	"sync"
 	"time"
+
+	"github.com/Graham-04/ironkey-api/hash"
 
 	"github.com/go-sql-driver/mysql"
 )
@@ -49,15 +51,15 @@ type UpdateUserRequest struct {
 }
 
 type AddUserRequest struct {
-	Email     string `json:"email" binding:"required,email"`
-	FirstName string `json:"firstname" binding:"required,alpha,min=1,max=50"`
-	LastName  string `json:"lastname" binding:"required,alpha,min=1,max=50"`
-	Notes     string `json:"notes"`
-	Password  string `json:"password" binding:"required"`
+	Email     string  `json:"email" binding:"required,email"`
+	FirstName string  `json:"firstname" binding:"required,alpha,min=1,max=50"`
+	LastName  string  `json:"lastname" binding:"required,alpha,min=1,max=50"`
+	Notes     *string `json:"notes"`
+	Password  string  `json:"password" binding:"required"`
 }
 
 type SQLDataStore interface {
-	AddUser(user User) bool
+	AddUser(user User) (RedactedUser, error)
 	InitDB()
 	// GetDB() *sql.DB
 	UserExists(email string, id string) bool
@@ -108,18 +110,18 @@ func (m *MySQLDataStore) InitDB() {
 // 	return m.db
 // }
 
-func (m *MySQLDataStore) AddUser(user User) bool {
+func (m *MySQLDataStore) AddUser(user User) (RedactedUser, error) {
 
 	userExists := m.UserExists(user.Email, "")
 	if !userExists {
 		fmt.Printf("[sql.go] Email %v does not exist. Adding user...\n", user.Email)
 	} else {
 		fmt.Printf("[sql.go] Email %v already exists\n", user.Email)
-		return false
+		return RedactedUser{}, errors.New("Email already exists")
 	}
 
 	start := time.Now()
-	stmt, err := m.db.Prepare(`INSERT INTO Users (email, passwordHash, firstName, lastName) VALUES (?, ?, ?, ?)`)
+	stmt, err := m.db.Prepare(`INSERT INTO Users (email, passwordHash, firstName, lastName, notes) VALUES (?, ?, ?, ?, ?)`)
 	if err != nil {
 		log.Fatal("[sql.go] Could not prepare AddUser SQL statement. Exiting...")
 	}
@@ -127,17 +129,16 @@ func (m *MySQLDataStore) AddUser(user User) bool {
 
 	user.Password = hash.GeneratePasswordHash(user.Password)
 
-	result, err := stmt.Exec(user.Email, user.Password, user.FirstName, user.LastName)
+	result, err := stmt.Exec(user.Email, user.Password, user.FirstName, user.LastName, user.Notes)
 	if err != nil {
 		// log.Fatal("[sql.go] Could not execute insert user query. Exiting...")
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1062 {
-			elapsed := time.Since(start)
-			fmt.Printf("[sql.go] Attepted to insert duplicate email: %v (Duration: %v)\n", user.Email, elapsed)
-			return false
+			return RedactedUser{}, fmt.Errorf("Attempted to insert duplicate email %v", user.Email)
+
 		} else {
 			elapsed := time.Since(start)
 			fmt.Printf("[sql.go] Error inserting email: %v (Duration: %v)\n", user.Email, elapsed)
-			return false
+			return RedactedUser{}, err
 		}
 	}
 
@@ -145,17 +146,24 @@ func (m *MySQLDataStore) AddUser(user User) bool {
 	if err != nil {
 		log.Fatal("[sql.go] Could not get RowsAffected for AddUser. Exiting...")
 	} else {
-		elapsed := time.Since(start)
-		fmt.Printf("[sql.go] Rows Affected: %v (Took: %v)\n", rowsAffected, elapsed)
 		if rowsAffected > 0 {
-			return true
+			u := m.GetUser(user.Email, "")
+			rd := RedactedUser{
+				Email: u.Email,
+				FirstName: u.FirstName,
+				LastName: u.LastName,
+				Id: u.Id,
+				Notes: u.Notes,
+				CreatedAt: u.CreatedAt,
+			}
+			return rd, nil
 		} else {
-			return false
+			return RedactedUser{}, err
 		}
 
 	}
 
-	return false
+	return RedactedUser{}, err
 }
 
 func (m *MySQLDataStore) DeleteUser(email string, id string) bool {
@@ -229,9 +237,9 @@ func (m *MySQLDataStore) GetUser(email string, id string) User {
 	defer stmt.Close()
 	var user User
 
-	err = stmt.QueryRow(email, id).Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
+	err = stmt.QueryRow(email, id).Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.Notes, &user.CreatedAt)
 	if err != nil && err != sql.ErrNoRows {
-		log.Fatal("[sql.go] Could not scan GetUser query. Exiting...")
+		log.Fatal("[sql.go] Could not scan GetUser query. Exiting...", err)
 	}
 	// err = row.Scan(&user.Email, &user.Id, &user.Password, &user.FirstName, &user.LastName, &user.CreatedAt)
 	// if err != nil && err != sql.ErrNoRows {

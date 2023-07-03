@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/Graham-04/ironkey-api/handlers"
 	"github.com/Graham-04/ironkey-api/sql"
 
@@ -13,27 +14,15 @@ func main() {
 	dataStore := sql.GetDataStore("mysql")
 	dataStore.InitDB()
 
-	id := "abc"
-	user := sql.User{
-		Id:        &id,
-		Email:     "john.doe@example.com",
-		Password:  "password123",
-		FirstName: "John",
-		LastName:  "Doe",
-	}
-
-	if dataStore.AddUser(user) {
-		fmt.Println("User added successfully")
-	} else {
-		fmt.Println("Failed to add user")
-	}
-
 	dataStore.AddUser(sql.User{
 		Email:     "email@email.com",
 		Password:  "password hash",
 		FirstName: "first name",
 		LastName:  "last name",
 	})
+
+	user := dataStore.GetUser("email@meail.com", "");
+	fmt.Println(user)
 
 	dataStore.Search("us")
 

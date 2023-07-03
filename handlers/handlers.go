@@ -11,28 +11,28 @@ import (
 func AddUser(c *gin.Context) {
 	dataStore := c.MustGet("datastore").(sql.SQLDataStore)
 	var newUser sql.AddUserRequest
-	var addUserResult bool
+	var addUserResult sql.RedactedUser
 	if err := c.BindJSON(&newUser); err != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
-	addUserResult = dataStore.AddUser(sql.User{
+
+	addUserResult, err := dataStore.AddUser(sql.User{
 		Email:     newUser.Email,
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
-		Notes:     &newUser.Notes,
+		Notes:     newUser.Notes,
 		Password:  newUser.Password,
 	})
-	fmt.Println("addUserResult: ", addUserResult)
 
-	if addUserResult {
-		c.Status(http.StatusOK)
-		return
-
-	} else {
+	if err != nil {
 		c.Status(http.StatusConflict)
 		return
 	}
+
+	fmt.Printf("Email: %v", addUserResult.Email)
+	c.JSON(http.StatusOK, addUserResult)
+	return
 
 }
 
@@ -132,6 +132,7 @@ func UpdateUser(c *gin.Context) {
 	dataStore := c.MustGet("datastore").(sql.SQLDataStore)
 	var user sql.UpdateUserRequest
 	if err := c.BindJSON(&user); err != nil {
+		fmt.Println(err)
 		c.Status(http.StatusBadRequest)
 		return
 	}
